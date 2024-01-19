@@ -1,6 +1,6 @@
 #include "reply.h"
 
 struct Reply {
-	char* username;
-	char* content;
+	char* Username;
+	char* Content;
 };

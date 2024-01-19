@@ -1,9 +1,9 @@
 #include "comment.h"
 
 struct Comment {
-	char* username;
-	char* content;
-	struct Reply* replies;
+	char* Username;
+	char* Content;
+	struct Reply* Replies;
 };
 
 
