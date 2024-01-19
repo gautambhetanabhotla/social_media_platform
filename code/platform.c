@@ -1,6 +1,6 @@
 #include "platform.h"
 
-struct Platform {
-	Post* Posts;
-	Post* lastViewedPost;
-};
+Platform* createPlatform() {
+	Platform* p = (Platform*) malloc(sizeof(Platform));
+	return p;
+}

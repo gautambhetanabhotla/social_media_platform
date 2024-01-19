@@ -1,10 +1,5 @@
 #include "post.h"
 
-struct Post {
-	char* Username;
-	char* Caption;
-	Comment* Comments;
-};
 
 Post* createPost(char* username, char* caption) {
 	Post* p = (Post*) malloc(sizeof(Post));
