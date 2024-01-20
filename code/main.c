@@ -5,5 +5,9 @@
 #include "platform.h"
 
 int main() {
+	PLATFORM = createPlatform();
+	addPost("gautambhetanabhotla", "post1");
+	addPost("gautambhetanabhotla", "post2");
+	if(deletePost(2)) printf("SUCCESSFULLY DELETED\n");
 	return 0;
 }

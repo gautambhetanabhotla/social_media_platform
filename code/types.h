@@ -15,6 +15,8 @@ struct Post {
 	char* Username;
 	char* Caption;
 	struct Comment* Comments;
+	struct Post* nextpost;
+	struct Post* previouspost;
 };
 
 struct Comment {
@@ -38,6 +40,7 @@ typedef struct Post Post;
 typedef struct Comment Comment;
 typedef struct Reply Reply;
 
-extern Platform PLATFORM;
+extern Platform* PLATFORM;
+extern bool postViewed;
 
 #endif
