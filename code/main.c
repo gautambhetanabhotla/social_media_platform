@@ -1,4 +1,3 @@
-#include "types.h"
 #include "post.h"
 #include "comment.h"
 #include "reply.h"
