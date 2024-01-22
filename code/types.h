@@ -23,6 +23,8 @@ struct Comment {
 	char* Username;
 	char* Content;
 	struct Reply* Replies;
+	struct Comment* nextcomment;
+	struct Comment* previouscomment;
 };
 
 struct Platform {
@@ -33,14 +35,12 @@ struct Platform {
 struct Reply {
 	char* Username;
 	char* Content;
+	struct Reply* nextreply;
 };
 
 typedef struct Platform Platform;
 typedef struct Post Post;
 typedef struct Comment Comment;
 typedef struct Reply Reply;
-
-extern Platform* PLATFORM;
-extern bool postViewed;
 
 #endif
