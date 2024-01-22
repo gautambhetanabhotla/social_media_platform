@@ -1,4 +1,5 @@
 #include "platform.h"
+#include "comment.h"
 #include "post.h"
 
 Platform* PLATFORM;
@@ -107,4 +108,23 @@ Post* previousPost() {
 	else return PLATFORM->lastViewedPost;
 }
 
+bool addComment(char* username, char* content) {
+	if(!(PLATFORM->lastViewedPost)) return false;
+	if(!(PLATFORM->lastViewedPost->Comments)) return false;
+	Comment* currentComment = PLATFORM->lastViewedPost->Comments;
+	while((currentComment->nextcomment)) {
+		currentComment = currentComment->nextcomment;
+	}
+	currentComment->nextcomment = createComment(username, content);
+	return true;
+}
 
+bool deleteComment(int n) {
+	Comment* LVPC = PLATFORM->lastViewedPost->Comments;
+	if(!LVPC) return false;
+	int size = 1;
+	while(LVPC->nextcomment) {
+		LVPC = LVPC->nextcomment;
+		size++;
+	}
+}

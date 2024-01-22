@@ -15,8 +15,13 @@ int main() {
 	addPost("gautambhetanabhotla", "post2");
 	addPost("krishivgupta", "post3");
 	addPost("sriyanshsuryadevara", "post4");
+	addPost("ravichandra", "post5");
 	printf("%s %s\n", currPost()->Username, currPost()->Caption);
 	printf("%s %s\n", viewPost(2)->Username, viewPost(2)->Caption);
+	printf("%s %s\n", currPost()->Username, currPost()->Caption);
+	printf("%s %s\n", currPost()->Username, currPost()->Caption);
+	printf("%s %s\n", nextPost()->Username, nextPost()->Caption); // Careful here. nextPost() is getting called twice, hence is updating the lastViewedPost pointer twice.
+	printf("%s %s\n", currPost()->Username, currPost()->Caption);
 	printf("%s %s\n", currPost()->Username, currPost()->Caption);
 	return 0;
 }
