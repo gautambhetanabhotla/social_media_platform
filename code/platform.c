@@ -33,14 +33,12 @@ bool deletePost(int n) {
 	Post* pp = PLATFORM->Posts;
 	int size = 1;
 	if(!pp) {
-		// printf("PLATFORM->Posts is NULL\n");
 		return false;
 	}
 	while(pp->nextpost) {
 		pp = pp->nextpost;
 		size++;
 	}
-	// printf("Reached the end of posts, number of posts is %d\n", size);
 	if(n == 1) {
 		Post* temp = pp;
 		pp = pp->previouspost;
@@ -48,12 +46,20 @@ bool deletePost(int n) {
 		free(temp);
 		return true;
 	}
+	if(n == 1 && size == 1) {
+		PLATFORM->Posts = NULL;
+		free(pp);
+		return true;
+	}
+	if(n == 1 && size != 1) {
+		pp->previouspost->nextpost = NULL;
+		free(pp);
+		return true;
+	}
 	if(size < n) {
-		// printf("Size is less than n\n");
 		return false;
 	}
 	else if(size == n) {
-		// printf("Size = n\n");
 		while(--n) pp = pp->previouspost;
 		(pp->nextpost)->previouspost = NULL;
 		Post* temp = pp->nextpost;
@@ -62,7 +68,6 @@ bool deletePost(int n) {
 		return true;
 	}
 	else if(size > n) {
-		// printf("Size is more than n\n");
 		while(--n) pp = pp->previouspost;
 		(pp->nextpost)->previouspost = pp->previouspost;
 		(pp->previouspost)->nextpost = pp->nextpost;
@@ -110,12 +115,17 @@ Post* previousPost() {
 
 bool addComment(char* username, char* content) {
 	if(!(PLATFORM->lastViewedPost)) return false;
-	if(!(PLATFORM->lastViewedPost->Comments)) return false;
 	Comment* currentComment = PLATFORM->lastViewedPost->Comments;
+	if(!(currentComment)) {
+		currentComment = createComment(username, content);
+		PLATFORM->lastViewedPost->Comments = currentComment;
+		return true;
+	}
 	while((currentComment->nextcomment)) {
 		currentComment = currentComment->nextcomment;
 	}
 	currentComment->nextcomment = createComment(username, content);
+	currentComment->nextcomment->previouscomment = currentComment;
 	return true;
 }
 
@@ -126,5 +136,30 @@ bool deleteComment(int n) {
 	while(LVPC->nextcomment) {
 		LVPC = LVPC->nextcomment;
 		size++;
+	}
+	if(n == 1 && size == 1) {
+		PLATFORM->lastViewedPost->Comments = NULL;
+		free(LVPC);
+		return true;
+	}
+	if(n == 1 && size != 1) {
+		LVPC->previouscomment->nextcomment = NULL;
+		free(LVPC);
+		return true;
+	}
+	if(size < n) return false;
+	else if(size == n) {
+		while(--n) LVPC = LVPC->previouscomment;
+		LVPC->nextcomment->previouscomment = NULL;
+		PLATFORM->lastViewedPost->Comments = LVPC->nextcomment;
+		free(LVPC);
+		return true;
+	}
+	else if(size > n) {
+		while(--n) LVPC = LVPC->previouscomment;
+		LVPC->previouscomment->nextcomment = LVPC->nextcomment;
+		LVPC->nextcomment->previouscomment = LVPC->previouscomment;
+		free(LVPC);
+		return true;
 	}
 }
