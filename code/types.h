@@ -36,6 +36,7 @@ struct Reply {
 	char* Username;
 	char* Content;
 	struct Reply* nextreply;
+	struct Reply* previousreply;
 };
 
 typedef struct Platform Platform;
