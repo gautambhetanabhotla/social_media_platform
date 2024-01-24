@@ -40,4 +40,4 @@ Equivalent to running `gcc code/post.c code/comment.c code/reply.c code/platform
 
 ## The command-line interface
 The I/O format matches the format specified in the assignment document.<br>
-Posts, comments and replies all have 2 elements: a username and some content (caption in the case of a post). The username must not contain spaces and can be 100 characters long, at max. The content may contain spaces but still must be, at most, 100 characters long, including the spaces.
+Posts, comments and replies all have 2 elements: a username and some content (caption in the case of a post). The username must not contain spaces and can be 100 characters long, at max. The content may contain spaces but still must be, at most, 100 characters long, including the spaces AND the newline at the end. Therefore, 99 characters long with spaces.

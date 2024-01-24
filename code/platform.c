@@ -8,14 +8,39 @@ bool postViewedYet = false;
 
 //helpers start here
 
+void DESTROYEVERYTHING() {
+	Post* pp = PLATFORM->Posts;
+	if(!pp) return;
+	int numposts = 1;
+	while(pp->nextpost) {
+		pp = pp->nextpost;
+		numposts++;
+	}
+	for(int i = 1; i <= numposts; i++) deletePost(i);
+	free(PLATFORM);
+}
+
+void freeReply(Reply* r) {
+	free(r->Username);
+	free(r->Content);
+	free(r);
+}
+
+void freeComment(Comment* c) {
+	free(c->Username);
+	free(c->Content);
+	deleteReplies(c);
+	free(c);
+}
+
 void deleteComments(Post* p) {
 	Comment* c = p->Comments;
 	if(!c) return;
 	while(c->nextcomment) {
 		c = c->nextcomment;
-		free(c->previouscomment);
+		freeComment(c->previouscomment);
 	}
-	free(c);
+	freeComment(c);
 	p->Comments = NULL;
 }
 
@@ -26,8 +51,16 @@ void deleteReplies(Comment* c) {
 		r = r->nextreply;
 		free(r->previousreply);
 	}
-	free(r);
+	freeReply(r);
 	c->Replies = NULL;
+}
+
+void freePost(Post* p) {
+	if(!p) return;
+	deleteComments(p);
+	free(p->Username);
+	free(p->Caption);
+	free(p);
 }
 
 //helpers end here
@@ -68,8 +101,9 @@ bool deletePost(int n) {
 	}
 	if(n == 1 && size == 1) {
 		PLATFORM->Posts = NULL;
-		free(pp);
+		freePost(pp);
 		PLATFORM->lastViewedPost = NULL;
+		postViewedYet = false;
 		return true;
 	}
 	if(n == 1 && size != 1) {
@@ -77,7 +111,8 @@ bool deletePost(int n) {
 		if(pp == PLATFORM->lastViewedPost) {
 			PLATFORM->lastViewedPost = pp->previouspost;
 		}
-		free(pp);
+		freePost(pp);
+		postViewedYet = false;
 		return true;
 	}
 	if(size < n) return false;
@@ -90,8 +125,9 @@ bool deletePost(int n) {
 			while(temp2->nextpost) temp2 = temp2->nextpost;
 			PLATFORM->lastViewedPost = temp2;
 		}
-		free(pp);
+		freePost(pp);
 		PLATFORM->Posts = temp;
+		postViewedYet = false;
 		return true;
 	}
 	else if(size > n) {
@@ -103,7 +139,8 @@ bool deletePost(int n) {
 		}
 		(pp->nextpost)->previouspost = pp->previouspost;
 		(pp->previouspost)->nextpost = pp->nextpost;
-		free(pp);
+		freePost(pp);
+		postViewedYet = false;
 		return true;
 	}
 }
@@ -175,11 +212,13 @@ bool deleteComment(int n) {
 	}
 	if(n == 1 && size == 1) {
 		PLATFORM->lastViewedPost->Comments = NULL;
+		deleteReplies(LVPC);
 		free(LVPC);
 		return true;
 	}
 	if(n == 1 && size != 1) {
 		LVPC->previouscomment->nextcomment = NULL;
+		deleteReplies(LVPC);
 		free(LVPC);
 		return true;
 	}
@@ -188,6 +227,7 @@ bool deleteComment(int n) {
 		while(--n) LVPC = LVPC->previouscomment;
 		LVPC->nextcomment->previouscomment = NULL;
 		PLATFORM->lastViewedPost->Comments = LVPC->nextcomment;
+		deleteReplies(LVPC);
 		free(LVPC);
 		return true;
 	}
@@ -195,6 +235,7 @@ bool deleteComment(int n) {
 		while(--n) LVPC = LVPC->previouscomment;
 		LVPC->previouscomment->nextcomment = LVPC->nextcomment;
 		LVPC->nextcomment->previouscomment = LVPC->previouscomment;
+		deleteReplies(LVPC);
 		free(LVPC);
 		return true;
 	}
@@ -228,6 +269,7 @@ bool addReply(char* username, char* content, int n) {
 	}
 	currentReply->nextreply = createReply(username, content);
 	currentReply->nextreply->previousreply = currentReply;
+	PLATFORM->lastViewedPost->Comments = LVPC;
 	return true;
 }
 

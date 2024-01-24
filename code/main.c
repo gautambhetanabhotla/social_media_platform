@@ -36,28 +36,28 @@ void viewPostHelper() {
 	scanf("%d", &n);
 	Post* p = viewPost(n);
 	if(!p) printf("ERROR: Post not found\n");
-	else printf("%s %s\n", p->Username, p->Caption);
+	else printf("%s %s", p->Username, p->Caption);
 	fflush(stdin);
 }
 
 void currentPostHelper() {
 	Post* p = currPost();
 	if(!p) printf("ERROR: Post not found\n");
-	else printf("%s %s\n", p->Username, p->Caption);
+	else printf("%s %s", p->Username, p->Caption);
 	fflush(stdin);
 }
 
 void previousPostHelper() {
 	Post* p = previousPost();
 	if(!p) printf("ERROR: Previous post does not exist\n");
-	else printf("%s %s\n", p->Username, p->Caption);
+	else printf("%s %s", p->Username, p->Caption);
 	fflush(stdin);
 }
 
 void nextPostHelper() {
 	Post* p = nextPost();
 	if(!p) printf("ERROR: Next post does not exist\n");
-	else printf("%s %s\n", p->Username, p->Caption);
+	else printf("%s %s", p->Username, p->Caption);
 	fflush(stdin);
 }
 
@@ -73,11 +73,11 @@ void viewAllCommentsHelper() {
 	Comment* c = viewComments();
 	if(!c) printf("ERROR: Comments not available\n");
 	else {
-		while(c->nextcomment) {
-			printf("%s %s\n", c->Username, c->Content);
+		while(c) {
+			printf("%s %s", c->Username, c->Content);
 			Reply* r = c->Replies;
 			while(r) {
-				printf("\t%s %s\n", c->Replies->Username, c->Replies->Content);
+				printf("\t%s %s", c->Replies->Username, c->Replies->Content);
 				r = r->nextreply;
 			}
 			c = c->nextcomment;
@@ -92,22 +92,34 @@ void deleteCommentHelper() {
 }
 
 void addReplyHelper() {
-
+	char username[101], content[101];
+	for(int i = 0; i < 101; i++) content[i] = '\0';
+	scanf("%s", username);
+	fgets(content, 101, stdin);
+	int s = strlen(content);
+	int n = content[s-2] - '0';
+	printf("n is %d, username is %s, content is %s\n", n, username, content);
+	content[s-2] = '\n';
+	content[s-1] = '\0';
+	if(!addReply(username, content, n)) printf("ERROR: Reply not added\n");
+	fflush(stdin);
 }
 
 void deleteReplyHelper() {
-
+	int n, m; scanf("%d", &n); scanf("%d", &m);
+	if(!deleteReply(n, m)) printf("ERROR: Reply not deleted\n");
+	fflush(stdin);
 }
 
 //helpers end here
 
-char* commandlist[] = {"create_platform", "add_post", "delete_post", "view_post", "current_post", "previous_post", "next_post", "add_comment", "view_all_comments", "delete_comment", "add_reply", "delete_reply"};
+char* commandlist[] = {"create_platform", "add_post", "delete_post", "view_post", "current_post", "previous_post", "next_post", "add_comment", "view_all_comments", "delete_comment", "add_reply", "delete_reply", "exit"};
 
 void processQuery() {
 	char command[100];
 	scanf("%s", command);
 	int commandmatch = -1;
-	for(int i = 0; i < 12; i++) if(strcmp(command, commandlist[i]) == 0) commandmatch = i;
+	for(int i = 0; i < 13; i++) if(strcmp(command, commandlist[i]) == 0) commandmatch = i;
 	switch(commandmatch) {
 		case -1:
 			fflush(stdin);
@@ -148,6 +160,9 @@ void processQuery() {
 		case 11:
 			deleteReplyHelper();
 			break;
+		case 12:
+			DESTROYEVERYTHING();
+			exit(0);
 	}
 }
 
