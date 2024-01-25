@@ -177,6 +177,7 @@ Post* nextPost() {
 }
 
 Post* previousPost() {
+	if(!PLATFORM) return NULL;
 	if(!(PLATFORM->lastViewedPost)) return NULL;
 	if(PLATFORM->lastViewedPost->nextpost) {
 		PLATFORM->lastViewedPost = PLATFORM->lastViewedPost->nextpost;
@@ -186,10 +187,12 @@ Post* previousPost() {
 }
 
 bool addComment(char* username, char* content) {
+	if(!PLATFORM) return false;
 	if(!(PLATFORM->lastViewedPost)) return false;
 	Comment* currentComment = PLATFORM->lastViewedPost->Comments;
 	if(!(currentComment)) {
-		PLATFORM->lastViewedPost->Comments = createComment(username, content);
+		currentComment = createComment(username, content);
+		PLATFORM->lastViewedPost->Comments = currentComment;
 		return true;
 	}
 	while((currentComment->nextcomment)) {
@@ -248,23 +251,33 @@ Comment* viewComments() {
 }
 
 bool addReply(char* username, char* content, int n) {
+	if(!PLATFORM) return false;
+	if(!(PLATFORM->lastViewedPost)) return false;
 	Comment* LVPC = PLATFORM->lastViewedPost->Comments;
 	if(!LVPC) return false;
+	if(!(LVPC->Replies)) {
+		LVPC->Replies = createReply(username, content);
+		PLATFORM->lastViewedPost->Comments = LVPC;
+		return true;
+	}
 	int size = 1;
 	while(LVPC->nextcomment) {
 		LVPC = LVPC->nextcomment;
 		size++;
 	}
+	printf("number of replies is %d\n", size);
 	if(size < n) return false;
 	while(--n) LVPC = LVPC->previouscomment;
 	Reply* currentReply = LVPC->Replies;
 	if(!currentReply) {
+		printf("current reply is null\n");
 		currentReply = createReply(username, content);
 		LVPC->Replies = currentReply;
 		PLATFORM->lastViewedPost->Comments = LVPC; // ???
 		return true;
 	}
 	while(currentReply->nextreply) {
+		printf("going to next reply\n");
 		currentReply = currentReply->nextreply;
 	}
 	currentReply->nextreply = createReply(username, content);
