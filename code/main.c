@@ -10,20 +10,17 @@ extern bool postViewedYet;
 
 void createPlatformHelper() {
 	PLATFORM = createPlatform();
-	// printf("Platform created\n");
 }
 
 void addPostHelper() {
-	// printf("in add post\n");
 	char username[101], caption[101];
-	scanf("%s", username);
+	scanf("%s\n", username);
 	fgets(caption, 101, stdin);
 	if(!addPost(username, caption)) printf("ERROR: Post not added\n");
 	fflush(stdin);
 }
 
 void deletePostHelper() {
-	// printf("in delete post\n");
 	int n;
 	scanf("%d", &n);
 	if(!deletePost(n)) printf("ERROR: Post not deleted\n");
@@ -31,7 +28,6 @@ void deletePostHelper() {
 }
 
 void viewPostHelper() {
-	// printf("in view post\n");
 	int n;
 	scanf("%d", &n);
 	Post* p = viewPost(n);
@@ -63,7 +59,7 @@ void nextPostHelper() {
 
 void addCommentHelper() {
 	char username[101], content[101];
-	scanf("%s", username);
+	scanf("%s\n", username);
 	fgets(content, 101, stdin);
 	if(!addComment(username, content)) printf("ERROR: Comment not added\n");
 	fflush(stdin);
@@ -77,7 +73,7 @@ void viewAllCommentsHelper() {
 			printf("%s %s", c->Username, c->Content);
 			Reply* r = c->Replies;
 			while(r) {
-				printf("\t%s %s", c->Replies->Username, c->Replies->Content);
+				printf("\t%s %s", r->Username, r->Content);
 				r = r->nextreply;
 			}
 			c = c->nextcomment;
@@ -93,14 +89,11 @@ void deleteCommentHelper() {
 
 void addReplyHelper() {
 	char username[101], content[101];
+	int n;
 	for(int i = 0; i < 101; i++) content[i] = '\0';
-	scanf("%s", username);
+	scanf("%s\n", username);
 	fgets(content, 101, stdin);
-	int s = strlen(content);
-	int n = content[s-2] - '0';
-	printf("n is %d, username is %s, content is %s\n", n, username, content);
-	content[s-2] = '\n';
-	content[s-1] = '\0';
+	scanf("%d", &n);
 	if(!addReply(username, content, n)) printf("ERROR: Reply not added\n");
 	fflush(stdin);
 }
@@ -113,7 +106,7 @@ void deleteReplyHelper() {
 
 //helpers end here
 
-char* commandlist[] = {"create_platform", "add_post", "delete_post", "view_post", "current_post", "previous_post", "next_post", "add_comment", "view_all_comments", "delete_comment", "add_reply", "delete_reply", "exit"};
+char* commandlist[] = {"create_platform", "add_post", "delete_post", "view_post", "current_post", "previous_post", "next_post", "add_comment", "view_comments", "delete_comment", "add_reply", "delete_reply", "exit"};
 
 void processQuery() {
 	char command[100];
@@ -167,25 +160,6 @@ void processQuery() {
 }
 
 int main() {
-	/* PLATFORM = createPlatform();
-	addPost("gautambhetanabhotla", "post1");
-	addPost("gautambhetanabhotla", "post2");
-	addPost("krishivgupta", "post3");
-	addPost("sriyanshsuryadevara", "post4");
-	addPost("ravichandra", "post5");
-	Post* PPPP = viewPost(3);
-	printf("%s %s\n", PPPP->Username, PPPP->Caption);
-	printf("%s %s\n", currPost()->Username, currPost()->Caption);
-	if(addComment("gautambhetanabhotla", "sriyansh is so hot")) printf("COMMENT ADDED\n");
-	if(addComment("krishiv", "sriyansh is so hoter")) printf("COMMENT ADDED\n");
-	printf("%s %s\n", currPost()->Comments->Username, currPost()->Comments->Content);
-	if(deleteComment(2)) printf("COMMENT DELETED\n");
-	if(addComment("gautambhetanabhotla", "sriyansh is so hot")) printf("COMMENT ADDED\n");
-	printf("%s %s\n", currPost()->Comments->Username, currPost()->Comments->Content);
-	if(addReply("gautambhetanabhotla", "ikr", 1)) printf("REPLY ADDED\n");
-	printf("\t%s %s\n", currPost()->Comments->Replies->Username, currPost()->Comments->Replies->Content);
-	if(addReply("gautambhetanabhotla", "ikr", 1)) printf("REPLY ADDED\n");
-	printf("\t%s %s\n", currPost()->Comments->Replies->nextreply->Username, currPost()->Comments->Replies->nextreply->Content); */
 	while(true) processQuery();
 	return 0;
 }

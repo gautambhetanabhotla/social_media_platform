@@ -11,12 +11,15 @@ bool postViewedYet = false;
 void DESTROYEVERYTHING() {
 	Post* pp = PLATFORM->Posts;
 	if(!pp) return;
-	int numposts = 1;
 	while(pp->nextpost) {
 		pp = pp->nextpost;
-		numposts++;
+		freePost(PLATFORM->Posts);
+		PLATFORM->Posts = pp;
 	}
-	for(int i = 1; i <= numposts; i++) deletePost(i);
+	if(pp) {
+		freePost(pp);
+		PLATFORM->Posts = NULL;
+	}
 	free(PLATFORM);
 }
 
@@ -255,67 +258,73 @@ bool addReply(char* username, char* content, int n) {
 	if(!(PLATFORM->lastViewedPost)) return false;
 	Comment* LVPC = PLATFORM->lastViewedPost->Comments;
 	if(!LVPC) return false;
-	if(!(LVPC->Replies)) {
-		LVPC->Replies = createReply(username, content);
-		PLATFORM->lastViewedPost->Comments = LVPC;
-		return true;
-	}
-	int size = 1;
+	int numcomments = 1;
 	while(LVPC->nextcomment) {
 		LVPC = LVPC->nextcomment;
-		size++;
+		numcomments++;
 	}
-	printf("number of replies is %d\n", size);
-	if(size < n) return false;
+	if(numcomments < n) return false;
 	while(--n) LVPC = LVPC->previouscomment;
 	Reply* currentReply = LVPC->Replies;
 	if(!currentReply) {
-		printf("current reply is null\n");
 		currentReply = createReply(username, content);
 		LVPC->Replies = currentReply;
-		PLATFORM->lastViewedPost->Comments = LVPC; // ???
 		return true;
 	}
 	while(currentReply->nextreply) {
-		printf("going to next reply\n");
 		currentReply = currentReply->nextreply;
 	}
 	currentReply->nextreply = createReply(username, content);
 	currentReply->nextreply->previousreply = currentReply;
+	while(LVPC->previouscomment) LVPC = LVPC->previouscomment;
 	PLATFORM->lastViewedPost->Comments = LVPC;
 	return true;
 }
 
 bool deleteReply(int n, int m) {
+	if(!PLATFORM) return false;
+	if(!(PLATFORM->lastViewedPost)) return false;
 	Comment* LVPC = PLATFORM->lastViewedPost->Comments;
 	if(!LVPC) return false;
-	int size = 1;
+	int numcomments = 1;
 	while(LVPC->nextcomment) {
 		LVPC = LVPC->nextcomment;
-		size++;
+		numcomments++;
 	}
-	if(size < n) return false;
+	if(numcomments < n) return false;
 	while(--n) LVPC = LVPC->previouscomment;
 	Reply* LVR = LVPC->Replies;
 	if(!LVR) return false;
-	int size2 = 1;
+	int numreplies = 1;
 	while(LVR->nextreply) {
 		LVR = LVR->nextreply;
-		size2++;
+		numreplies++;
 	}
-	if(size2 < m) return false;
-	else if(size2 == m) {
+	if(numreplies < m) return false;
+	else if(numreplies == m && m != 1) {
 		while(--m) LVR = LVR->previousreply;
 		LVR->nextreply->previousreply = NULL;
 		LVPC->Replies = LVR->nextreply;
-		free(LVR);
+		freeReply(LVR);
 		return true;
 	}
-	else if(size2 > m) {
-		while(--m) LVR = LVR->previousreply;
-		LVR->previousreply->nextreply = LVR->nextreply;
-		LVR->nextreply->previousreply = LVR->previousreply;
-		free(LVR);
+	else if(numreplies == m && m == 1) {
+		LVPC->Replies = NULL;
+		freeReply(LVR);
 		return true;
+	}
+	else if(numreplies > m) {
+		if(m > 1) {
+			while(--m) LVR = LVR->previousreply;
+			LVR->previousreply->nextreply = LVR->nextreply;
+			LVR->nextreply->previousreply = LVR->previousreply;
+			freeReply(LVR);
+			return true;
+		}
+		else if(m == 1) {
+			LVR->previousreply->nextreply = NULL;
+			freeReply(LVR);
+			return true;
+		}
 	}
 }
