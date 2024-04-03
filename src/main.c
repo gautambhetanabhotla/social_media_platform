@@ -8,8 +8,13 @@ extern bool postViewedYet;
 
 //some more helpers
 
+
+void prompt() {
+	printf("\033[0;34mCommand: \033[0m");
+}
+
 void createPlatformHelper() {
-	PLATFORM = createPlatform();
+	if(!PLATFORM) PLATFORM = createPlatform();
 }
 
 void addPostHelper() {
@@ -109,6 +114,7 @@ void deleteReplyHelper() {
 char* commandlist[] = {"create_platform", "add_post", "delete_post", "view_post", "current_post", "previous_post", "next_post", "add_comment", "view_comments", "delete_comment", "add_reply", "delete_reply", "exit"};
 
 void processQuery() {
+	prompt();
 	char command[100];
 	scanf("%s", command);
 	int commandmatch = -1;
