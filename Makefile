@@ -1,5 +1,15 @@
-main: build/*.o
-	@gcc -g -o main build/*.o
+objects := $(patsubst src/%.c,build/%.o,$(wildcard src/*.c))
 
-build/*.o:
-	@gcc -g -c src/*.c -o build/*.o
+default: build main
+
+build:
+	@mkdir build
+
+main: $(objects)
+	@gcc -o main -g $^
+
+build/%.o: src/%.c
+	@gcc -c -g -o $@ $<
+
+clean:
+	@rm -rf build main

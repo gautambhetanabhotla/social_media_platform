@@ -1,9 +1,19 @@
-# DSA - Assignment 1
+# Social media platform
 
-Name: Gautam Bhetanabhotla<br>
-Roll number: 2023101032
+This program was made as part of our first assignment on Data Structures and Agorithms.
 
 <br>
+
+## Commands
+
+`create_platform` creates the social media platform. It is the first command that must be run in every session. Only one platform can be created.<br>
+`add_post username caption` adds a post to the platform, by `username` and with the caption `caption`.<br>
+`delete_post n` deletes the `n`th recent post on the platform.<br>
+`view_post n` displays the `n`th recent post on the platform along with its comments and their replies.<br>
+`current_post` displays the most recently viewed post. If no post has been viewed yet, it displays the most recent post added to the platform.<br>
+`previous_post` displays the post added right after the current post. (It says "previous" because recent posts show up first and older ones next, for example, on Instagram.)<br>
+`next_post` displays the post added before the current post.<br>
+`add_comment username content` adds a comment on the current post by `username` with the content `content`.
 
 ## Files
 
@@ -44,16 +54,5 @@ Equivalent to running `gcc code/post.c code/comment.c code/reply.c code/platform
 
 ## The command-line interface
 
-The I/O format matches the format specified in the assignment document.<br>
 Posts, comments and replies all have 2 elements: a username and some content (caption in the case of a post). The username must not contain spaces and can be 100 characters long, at max. The content may contain spaces but still must be, at most, 100 characters long, including the spaces AND the newline at the end. Therefore, 99 characters long with spaces.
 
-## Commands
-
-`create_platform` creates the social media platform. It is the first command that must be run in every session. Only one platform can be created.<br>
-`add_post username caption` adds a post to the platform, by `username` and with the caption `caption`.<br>
-`delete_post n` deletes the `n`th recent post on the platform.<br>
-`view_post n` displays the `n`th recent post on the platform along with its comments and their replies.<br>
-`current_post` displays the most recently viewed post. If no post has been viewed yet, it displays the most recent post added to the platform.<br>
-`previous_post` displays the post added right after the current post. (It says "previous" because recent posts show up first and older ones next, for example, on Instagram.)<br>
-`next_post` displays the post added before the current post.<br>
-`add_comment username content` adds a comment on the current post by `username` with the content `content`.
